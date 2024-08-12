@@ -1,5 +1,5 @@
 # Mobile Online Banking System
-# Overview
+## Overview
 This project is a Mobile Online Banking System that allows users to manage their banking accounts, including checking balances, transferring money, tracking income and expenses, generating statements, and depositing checks remotely. The system also provides an admin interface for managing user accounts.
 
 Features
