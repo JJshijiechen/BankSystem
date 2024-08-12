@@ -87,19 +87,47 @@ public class Database {
     }
 
     public static String generateStatement(String month) {
+        HashMap<String, List<String>> userHistory = userTransactionHistory.get(currentUser.getEmail());
+        if (userHistory == null) {
+            return "No history for selected month";
+        }
         
+        List<String> history = userHistory.get(month);
+        if (history == null || history.isEmpty()) {
+            return "No history for selected month";
+        } else {
+            StringBuilder statement = new StringBuilder();
+            for (String record : history) {
+                statement.append(record).append("\n");
+            }
+            return statement.toString();
+        }
     }
 
     public static boolean depositCheck(String checkNumber, double amount) {
-        
+        currentUser.setBalance(currentUser.getBalance() + amount);
+
+        // Record transaction history for the current user
+        recordTransaction(currentUser.getEmail(), "Check Deposit - " + checkNumber, amount);
+
+        saveUserData();  // Save the updated user data to file
+        saveTransactionHistory();  // Save the updated transaction history to file
+        return true;
     }
 
     private static void recordTransaction(String userEmail, String description, double amount) {
-        
+        String month = getCurrentMonth();
+        String record = description + ": $" + amount;
+
+        userTransactionHistory
+            .computeIfAbsent(userEmail, k -> new HashMap<>())
+            .computeIfAbsent(month, k -> new ArrayList<>())
+            .add(record);
     }
 
     private static String getCurrentMonth() {
-        
+        Calendar calendar = Calendar.getInstance();
+        return new java.text.SimpleDateFormat("MMMM").format(calendar.getTime());
     }
 
     private static void loadUserData() {
