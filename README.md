@@ -38,8 +38,8 @@ The project is organized into several Java classes corresponding to the differen
 2. **RegisterGUI**: Handles user registration.
 3. **LoginGUI**: Manages user login.
 4. **AdminLoginGUI**: Handles admin login.
-5. **UserMainGUI**: The main dashboard for users after login.
-6. **AdminMainGUI**: The main dashboard for admins.
+5. **UserMainGUI**: The main menu for users after login.
+6. **AdminMainGUI**: The main menu for admins.
 7. **TransferMoneyGUI**: GUI for transferring money between accounts.
 8. **GenerateStatementGUI**: GUI for generating account statements.
 9. **DepositCheckGUI**: GUI for depositing checks.
@@ -48,12 +48,12 @@ The project is organized into several Java classes corresponding to the differen
 ## Usage
 1. **User Registration**: Start by registering a new account.
 2. **Login**: Log in with your credentials.
-3. **Dashboard**: Access various features such as checking your balance, transferring money, and generating statements.
+3. **Menu**: Access various features such as checking your balance, transferring money, and generating statements.
 4. **Admin Access**: Admins can log in to manage user accounts.
 
 ## Installation
-1. Clone the repository: gh repo clone JJshijiechen/BankSystem
-   or HTTPS Link: https://github.com/JJshijiechen/BankSystem.git
+1. HTTPS Link: https://github.com/JJshijiechen/BankSystem.git
+   or Clone the repository: gh repo clone JJshijiechen/BankSystem
 2. Import the project into Eclipse.
 3. Run the `Main` class to start the application.
 
