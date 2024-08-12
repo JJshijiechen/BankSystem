@@ -35,7 +35,7 @@ public class Database {
     }
 
     public static boolean adminLogin_clk(String username, String password) {
-        
+        return admin != null && admin.getUsername().equals(username) && admin.getPassword().equals(password);
     }
 
     public static HashMap<String, User> getUsers() {
@@ -43,11 +43,26 @@ public class Database {
     }
 
     public static void deleteUser(String email) {
-        
+        users.remove(email);
+        userTransactionHistory.remove(email);
+        saveUserData();  // Save the updated user data to file
+        saveTransactionHistory();  // Save the updated transaction history to file
     }
 
     public static void updateUser(String email, String newName, String newEmail, String newPassword) {
-        
+        User user = users.get(email);
+        if (user != null) {
+            user.setName(newName);
+            user.setEmail(newEmail);
+            user.setPassword(newPassword);
+            users.put(newEmail, user);
+            if (!email.equals(newEmail)) {
+                users.remove(email);
+                userTransactionHistory.put(newEmail, userTransactionHistory.remove(email));
+            }
+            saveUserData();  // Save the updated user data to file
+            saveTransactionHistory();  // Save the updated transaction history to file
+        }
     }
 
     public static double getBalance() {
@@ -117,19 +132,66 @@ public class Database {
     }
 
     private static void loadAdminData() {
-        
+        try (BufferedReader br = new BufferedReader(new FileReader(ADMIN_FILE))) {
+            String line = br.readLine();
+            if (line != null) {
+                String[] data = line.split(",");
+                if (data.length == 2) {
+                    admin = new Admin(data[0], data[1]);
+                }
+            }
+        } catch (IOException e) {
+            // If the admin file doesn't exist, we'll create a default admin later
+            System.out.println("Admin data file not found. A new one will be created with default admin.");
+            admin = new Admin("admin", "admin123"); // Default admin account
+            saveAdminData(); // Save the default admin account
+        }
     }
 
     private static void saveAdminData() {
-        
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(ADMIN_FILE))) {
+            bw.write(admin.getUsername() + "," + admin.getPassword());
+        } catch (IOException e) {
+            System.err.println("Error saving admin data: " + e.getMessage());
+        }
     }
 
     private static void loadTransactionHistory() {
-        
+        try (BufferedReader br = new BufferedReader(new FileReader(HISTORY_FILE))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(":", 3);
+                if (parts.length == 3) {
+                    String userEmail = parts[0];
+                    String month = parts[1];
+                    String transaction = parts[2];
+
+                    userTransactionHistory
+                        .computeIfAbsent(userEmail, k -> new HashMap<>())
+                        .computeIfAbsent(month, k -> new ArrayList<>())
+                        .add(transaction);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Transaction history file not found. A new one will be created upon saving data.");
+        }
     }
 
     private static void saveTransactionHistory() {
-
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(HISTORY_FILE))) {
+            for (Map.Entry<String, HashMap<String, List<String>>> userEntry : userTransactionHistory.entrySet()) {
+                String userEmail = userEntry.getKey();
+                for (Map.Entry<String, List<String>> monthEntry : userEntry.getValue().entrySet()) {
+                    String month = monthEntry.getKey();
+                    for (String record : monthEntry.getValue()) {
+                        bw.write(userEmail + ":" + month + ":" + record);
+                        bw.newLine();
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving transaction history: " + e.getMessage());
+        }
     }
         
 }
