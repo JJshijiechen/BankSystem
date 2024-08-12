@@ -52,4 +52,13 @@ The project is organized into several Java classes corresponding to the differen
 4. **Admin Access**: Admins can log in to manage user accounts.
 
 ## Installation
-1. Clone the repository: 
+1. Clone the repository: gh repo clone JJshijiechen/BankSystem
+   or HTTPS Link: https://github.com/JJshijiechen/BankSystem.git
+2. Import the project into Eclipse.
+3. Run the `Main` class to start the application.
+
+## Contributors
+- Shijie Chen
+- Yinghui Du
+- Elaine Lyu
+
